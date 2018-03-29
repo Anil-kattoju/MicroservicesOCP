@@ -30,6 +30,15 @@ import static java.util.stream.Collectors.groupingBy;
 /**
  * @author Maciej Szarlinski
  */
+
+@FeignClient(name= "beer-catalog-service", url="http://localhost:8080")
+//@PropertySourcee("default.properties"),
+//@PropertySource(value = "override.properties", ignoreResourceNotFound = true
+interface BeerClient {
+  @GetMapping("/beers")
+  Resources<Beer> getVisitsForPets();    
+}
+
 @Component
 @RequiredArgsConstructor
 public class VisitsServiceClient {

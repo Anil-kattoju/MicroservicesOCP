@@ -31,9 +31,7 @@ import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 
-/**
- * @author Maciej Szarlinski
- */
+
 @RestController
 @RequiredArgsConstructor
 public class ApiGatewayController {

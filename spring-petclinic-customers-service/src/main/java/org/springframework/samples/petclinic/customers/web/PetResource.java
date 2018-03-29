@@ -20,67 +20,58 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.samples.petclinic.customers.model.*;
-import org.springframework.samples.petclinic.monitoring.Monitored;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * @author Juergen Hoeller
- * @author Ken Krebs
- * @author Arjen Poutsma
- * @author Maciej Szarlinski
- */
+
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 class PetResource {
 
-    private final PetRepository petRepository;
+	@Autowired
+	private PetRepository petRepository;
 
-    private final OwnerRepository ownerRepository;
+	@Autowired
+	private OwnerRepository ownerRepository;
 
-    @GetMapping("/petTypes")
-    public List<PetType> getPetTypes() {
-        return petRepository.findPetTypes();
-    }
+	@GetMapping("/petTypes")
+	public List<PetType> getPetTypes() {
+		return petRepository.findPetTypes();
+	}
 
-    @PostMapping("/owners/{ownerId}/pets")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Monitored
-    public void processCreationForm(
-        @RequestBody PetRequest petRequest,
-        @PathVariable("ownerId") int ownerId) {
+	@PostMapping("/owners/{ownerId}/pets")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void processCreationForm(@RequestBody PetRequest petRequest, @PathVariable("ownerId") int ownerId) {
 
-        final Pet pet = new Pet();
-        final Owner owner = ownerRepository.findOne(ownerId);
-        owner.addPet(pet);
+		final Pet pet = new Pet();
+		final Owner owner = ownerRepository.findOne(ownerId);
+		owner.addPet(pet);
 
-        save(pet, petRequest);
-    }
+		save(pet, petRequest);
+	}
 
-    @PutMapping("/owners/*/pets/{petId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Monitored
-    public void processUpdateForm(@RequestBody PetRequest petRequest) {
-        save(petRepository.findOne(petRequest.getId()), petRequest);
-    }
+	@PutMapping("/owners/*/pets/{petId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void processUpdateForm(@RequestBody PetRequest petRequest) {
+		save(petRepository.findOne(petRequest.getId()), petRequest);
+	}
 
-    private void save(final Pet pet, final PetRequest petRequest) {
+	private void save(final Pet pet, final PetRequest petRequest) {
 
-        pet.setName(petRequest.getName());
-        pet.setBirthDate(petRequest.getBirthDate());
+		pet.setName(petRequest.getName());
+		pet.setBirthDate(petRequest.getBirthDate());
 
-        petRepository.findPetTypeById(petRequest.getTypeId())
-            .ifPresent(pet::setType);
+		petRepository.findPetTypeById(petRequest.getTypeId()).ifPresent(pet::setType);
 
-        log.info("Saving pet {}", pet);
-        petRepository.save(pet);
-    }
+		// log.info("Saving pet {}", pet);
+		petRepository.save(pet);
+	}
 
-    @GetMapping("owners/*/pets/{petId}")
-    public PetDetails findPet(@PathVariable("petId") int petId) {
-        return new PetDetails(petRepository.findOne(petId));
-    }
+	@GetMapping("owners/*/pets/{petId}")
+	public PetDetails findPet(@PathVariable("petId") int petId) {
+		return new PetDetails(petRepository.findOne(petId));
+	}
 
 }

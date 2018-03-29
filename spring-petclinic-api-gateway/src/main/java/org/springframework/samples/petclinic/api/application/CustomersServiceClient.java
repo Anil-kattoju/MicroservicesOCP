@@ -25,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @Component
 @RequiredArgsConstructor
+@FeignClient(name = "customer-service", url = "http://customer-service:8081")
 public class CustomersServiceClient {
 
     private final RestTemplate loadBalancedRestTemplate;

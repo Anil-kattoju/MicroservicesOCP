@@ -22,10 +22,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-/**
- * @author Juergen Hoeller
- * Can be Cat, Dog, Hamster...
- */
+
 @Entity
 @Table(name = "types")
 public class PetType {

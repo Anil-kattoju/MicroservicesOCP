@@ -21,40 +21,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.samples.petclinic.customers.model.Owner;
 import org.springframework.samples.petclinic.customers.model.OwnerRepository;
-import org.springframework.samples.petclinic.monitoring.Monitored;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
-/**
- * @author Juergen Hoeller
- * @author Ken Krebs
- * @author Arjen Poutsma
- * @author Michael Isvy
- * @author Maciej Szarlinski
- */
 @RequestMapping("/owners")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 class OwnerResource {
 
-    private final OwnerRepository ownerRepository;
+	@Autowired
+    private  OwnerRepository ownerRepository;
 
-    /**
-     * Create Owner
-     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @Monitored
     public void createOwner(@Valid @RequestBody Owner owner) {
         ownerRepository.save(owner);
     }
-
-    /**
-     * Read single Owner
-     */
+    
     @GetMapping(value = "/{ownerId}")
     public Owner findOwner(@PathVariable("ownerId") int ownerId) {
         return ownerRepository.findOne(ownerId);
@@ -65,6 +51,7 @@ class OwnerResource {
      */
     @GetMapping
     public List<Owner> findAll() {
+    		System.out.println("sdasdsadasd");
         return ownerRepository.findAll();
     }
 
@@ -72,7 +59,6 @@ class OwnerResource {
      * Update Owner
      */
     @PutMapping(value = "/{ownerId}")
-    @Monitored
     public Owner updateOwner(@PathVariable("ownerId") int ownerId, @Valid @RequestBody Owner ownerRequest) {
         final Owner ownerModel = ownerRepository.findOne(ownerId);
         // This is done by hand for simplicity purpose. In a real life use-case we should consider using MapStruct.
@@ -81,7 +67,7 @@ class OwnerResource {
         ownerModel.setCity(ownerRequest.getCity());
         ownerModel.setAddress(ownerRequest.getAddress());
         ownerModel.setTelephone(ownerRequest.getTelephone());
-        log.info("Saving owner {}", ownerModel);
+        //log.info("Saving owner {}", ownerModel);
         return ownerRepository.save(ownerModel);
     }
 }
