@@ -37,15 +37,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
 
-/**
- * Simple JavaBean domain object representing a veterinarian.
- *
- * @author Ken Krebs
- * @author Juergen Hoeller
- * @author Sam Brannen
- * @author Arjen Poutsma
- * @author Maciej Szarlinski
- */
 @Entity
 @Table(name = "vets")
 public class Vet {

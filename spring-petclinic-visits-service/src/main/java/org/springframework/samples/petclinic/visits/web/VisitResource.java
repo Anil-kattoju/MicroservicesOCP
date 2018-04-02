@@ -26,13 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-/**
- * @author Juergen Hoeller
- * @author Ken Krebs
- * @author Arjen Poutsma
- * @author Michael Isvy
- * @author Maciej Szarlinski
- */
+
 @RestController
 @RequiredArgsConstructor
 @Slf4j

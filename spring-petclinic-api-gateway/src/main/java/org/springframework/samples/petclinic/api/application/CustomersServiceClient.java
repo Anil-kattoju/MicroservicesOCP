@@ -20,17 +20,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-/**
- * @author Maciej Szarlinski
- */
+
 @Component
 @RequiredArgsConstructor
-@FeignClient(name = "customer-service", url = "http://customer-service:8081")
 public class CustomersServiceClient {
 
-    private final RestTemplate loadBalancedRestTemplate;
+    private final RestTemplate loadBalancedRestTemplate = new RestTemplate();
 
     public OwnerDetails getOwner(final int ownerId) {
-        return loadBalancedRestTemplate.getForObject("http://customers-service/owners/{ownerId}", OwnerDetails.class, ownerId);
+        return loadBalancedRestTemplate.getForObject("http://customer-service/owners/{ownerId}", OwnerDetails.class, ownerId);
     }
+    
+//    public OwnerDetails[] getOwners() {
+//		System.out.println("API asked to call customer-service");
+//		OwnerDetails[] owners = loadBalancedRestTemplate.getForObject("http://customers-service/owners", OwnerDetails[].class);
+//		return owners;
+//    }
 }

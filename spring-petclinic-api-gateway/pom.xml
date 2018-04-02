@@ -1,10 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.springframework.samples.petclinic.api</groupId>
-    <artifactId>spring-petclinic-api-gateway</artifactId>
+    <artifactId>api-gateway</artifactId>
     <packaging>jar</packaging>
     <description>Spring PetClinic API Gateway</description>
 
@@ -21,6 +19,8 @@
         <webjars-angular.version>1.6.4</webjars-angular.version>
         <webjars-angular-ui-router.version>1.0.3</webjars-angular-ui-router.version>
         <wro4j.version>1.8.0</wro4j.version>
+        <docker.image.exposed.port>8081</docker.image.exposed.port>
+        <docker.image.dockerfile.dir>${basedir}/../docker</docker.image.dockerfile.dir>
     </properties>
 
     <dependencies>
@@ -31,11 +31,14 @@
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
         </dependency>
+        <!--
         <dependency>
+        
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
+        -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -55,6 +58,7 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-sleuth-zipkin</artifactId>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-config</artifactId>
@@ -63,14 +67,17 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-sleuth</artifactId>
-        </dependency>
+        -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-sleuth</artifactId>
+        </dependency>
+        
 
         <!-- Third parties -->
         <dependency>
@@ -106,42 +113,69 @@
             <groupId>org.webjars</groupId>
             <artifactId>webjars-locator</artifactId>
         </dependency>
+        <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-feign</artifactId>
+		</dependency>
+		<dependency>
+        		<groupId>org.springframework.hateoas</groupId>
+        		<artifactId>spring-hateoas</artifactId>
+        		<version>0.24.0.RELEASE</version>
+    		</dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>ro.isdc.wro4j</groupId>
-                <artifactId>wro4j-maven-plugin</artifactId>
-                <version>${wro4j.version}</version>
-                <!-- 
-                <executions>
-                    <execution>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                -->
-                <configuration>
-                    <wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory</wroManagerFactory>
-                    <cssDestinationFolder>${project.build.directory}/classes/static/css</cssDestinationFolder>
-                    <wroFile>${basedir}/src/main/wro/wro.xml</wroFile>
-                    <extraConfigFile>${basedir}/src/main/wro/wro.properties</extraConfigFile>
-                    <contextFolder>${basedir}/src/main/less</contextFolder>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.webjars</groupId>
-                        <artifactId>bootstrap</artifactId>
-                        <version>${webjars-bootstrap.version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-        </plugins>
-    </build>
-
     
+    <profiles>
+        <profile>
+  			<id>local</id>
+  			<build>
+    			<resources>
+      			<resource>
+	        			<directory>src/main/config-local</directory>
+      			</resource>
+      			<resource>
+	        			<directory>src/main/resources</directory>
+    	  			</resource>
+    			</resources>
+    			</build>
+  		</profile>
+  		<profile>
+  			<id>openshift</id>
+  			<build>
+    				<resources>
+      				<resource>
+	        				<directory>src/main/config-openshift</directory>
+      				</resource>
+      				<resource>
+	        				<directory>src/main/resources</directory>
+    	  				</resource>
+    	  			</resources>
+    	  		</build>
+    	  			<dependencies>
+    	  			<dependency>
+    						<groupId>io.fabric8</groupId>
+    						<artifactId>spring-cloud-starter-kubernetes</artifactId>
+    						<version>0.1.6</version>
+				</dependency>
+  				</dependencies>
+  			</profile>  
+    </profiles>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>fabric8-maven-plugin</artifactId>
+        <version>3.5.37</version>
+        <executions>
+          <execution>
+            <id>fmp</id>
+            <goals>
+              <goal>resource</goal>
+              <goal>helm</goal>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin></plugins></build>
 
 </project>

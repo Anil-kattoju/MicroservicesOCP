@@ -1,10 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.springframework.samples.petclinic.visits</groupId>
-	<artifactId>spring-petclinic-visits-service</artifactId>
+	<artifactId>visit-service</artifactId>
 	<packaging>jar</packaging>
 	<description>Spring PetClinic Visits Service</description>
 
@@ -15,8 +13,7 @@
     </parent>
 
     <properties>
-        <docker.exposed.port>8081</docker.exposed.port>
-        <docker.image.dockerfile.dir>${basedir}/../docker</docker.image.dockerfile.dir>
+       
     </properties>
 
 	<dependencies>
@@ -44,10 +41,12 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-config</artifactId>
         </dependency>
+        <!-- 
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
+        -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-sleuth</artifactId>
@@ -62,11 +61,10 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
-		<dependency>
-			<groupId>org.hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-			<scope>runtime</scope>
-		</dependency>
+			<dependency>
+      				<groupId>com.h2database</groupId>
+      				<artifactId>h2</artifactId>
+    			</dependency>
         <dependency>
             <groupId>org.jolokia</groupId>
             <artifactId>jolokia-core</artifactId>
@@ -80,17 +78,23 @@
 	</dependencies>
 
     <profiles>
-        <profile>
-            <id>buildDocker</id>
-                <build>
-                    <plugins>
-                        <plugin>
-                            <groupId>com.spotify</groupId>
-                            <artifactId>docker-maven-plugin</artifactId>
-                            <version>${docker.plugin.version}</version>
-                        </plugin>
-                    </plugins>
-                </build>
-        </profile>
+       
     </profiles>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>fabric8-maven-plugin</artifactId>
+        <version>3.5.37</version>
+        <executions>
+          <execution>
+            <id>fmp</id>
+            <goals>
+              <goal>resource</goal>
+              <goal>helm</goal>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin></plugins></build>
 </project>

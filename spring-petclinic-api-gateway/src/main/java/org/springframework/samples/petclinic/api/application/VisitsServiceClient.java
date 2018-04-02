@@ -27,30 +27,19 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.groupingBy;
 
-/**
- * @author Maciej Szarlinski
- */
-
-@FeignClient(name= "beer-catalog-service", url="http://localhost:8080")
-//@PropertySourcee("default.properties"),
-//@PropertySource(value = "override.properties", ignoreResourceNotFound = true
-interface BeerClient {
-  @GetMapping("/beers")
-  Resources<Beer> getVisitsForPets();    
-}
 
 @Component
 @RequiredArgsConstructor
 public class VisitsServiceClient {
 
-    private final RestTemplate loadBalancedRestTemplate;
+    private final RestTemplate loadBalancedRestTemplate = new RestTemplate();
 
     public Map<Integer, List<VisitDetails>> getVisitsForPets(final List<Integer> petIds, final int ownerId) {
         //TODO:  expose batch interface in Visit Service
         final ParameterizedTypeReference<List<VisitDetails>> responseType = new ParameterizedTypeReference<List<VisitDetails>>() {
         };
         return petIds.parallelStream()
-            .flatMap(petId -> loadBalancedRestTemplate.exchange("http://visits-service/owners/{ownerId}/pets/{petId}/visits", HttpMethod.GET, null,
+            .flatMap(petId -> loadBalancedRestTemplate.exchange("http://visit-service/owners/{ownerId}/pets/{petId}/visits", HttpMethod.GET, null,
                 responseType, ownerId, petId).getBody().stream())
             .collect(groupingBy(VisitDetails::getPetId));
     }

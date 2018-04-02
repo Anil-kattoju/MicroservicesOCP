@@ -21,9 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-/**
- * @author Maciej Szarlinski
- */
+
 @RunWith(SpringRunner.class)
 @WebMvcTest(PetResource.class)
 @ActiveProfiles("test")
